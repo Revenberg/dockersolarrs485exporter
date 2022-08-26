@@ -5,7 +5,6 @@ services:
     image: revenberg/solarrs485exporter
     container_name: solarrs485exporter
     environment:
-      - IP=192.168.2.20
       - PROMETHEUS_PORT=9008
       - LOG_LEVEL=DEBUG
     restart: always   

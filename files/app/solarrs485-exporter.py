@@ -14,7 +14,7 @@ PROMETHEUS_PORT   = int(os.getenv("PROMETHEUS_PORT", "9003"))
 
 server = os.getenv("RS485_ADDRESS", "localhost")
 port = int(os.getenv("RS485_PORT", "8899"))
-IP                       = os.getenv("IP", "")
+
 polling_interval_seconds = int(os.getenv("POLLING_INTERVAL_SECONDS", "15"))
 
 LOGFORMAT = '%(asctime)-15s %(message)s'
@@ -29,12 +29,14 @@ class AppMetrics:
     """
     _prometheus = {}
 
-    def __init__(self, PROMETHEUS_PREFIX='', APIKEY='', WEATHER_COUNTRY='NL', WEATHER_LANGUAGE='NL', polling_interval_seconds=5):
+    def __init__(self, PROMETHEUS_PREFIX='', server=server, port=port, polling_interval_seconds=5):
 
         if PROMETHEUS_PREFIX != '':
             PROMETHEUS_PREFIX = PROMETHEUS_PREFIX + "_"
 
-        self.IP = IP
+        self.server=server
+        self.port=port
+            
         self.polling_interval_seconds = polling_interval_seconds
 
         # Prometheus metrics to collect
@@ -77,7 +79,7 @@ class AppMetrics:
         new values.
         """
 
-        instrument = rs485eth.Instrument(server, port, 1, debug=False) # port name, slave address
+        instrument = rs485eth.Instrument(self.server, self.port, 1, debug=False) # port name, slave address
         
         self._prometheus['generatedalltime'].set(instrument.read_long(3008, functioncode=4, signed=False))
         self._prometheus['generatedtoday'].set(instrument.read_register(3014, numberOfDecimals=1, functioncode=4, signed=False)/10)
@@ -118,17 +120,15 @@ class AppMetrics:
 def main():
     """Main entry point"""
 
-    if IP != "":
-        app_metrics = AppMetrics(
-            PROMETHEUS_PREFIX=PROMETHEUS_PREFIX,
-            APIKEY=IP,
-            polling_interval_seconds=polling_interval_seconds
-        )
-        start_http_server(PROMETHEUS_PORT)
-        LOG.info("start prometheus port: %s", PROMETHEUS_PORT)
-        app_metrics.run_metrics_loop()
-    else:
-        LOG.error("IP is invalid")
+    app_metrics = AppMetrics(
+        PROMETHEUS_PREFIX=PROMETHEUS_PREFIX,
+        server=server,
+        port=port,
+        polling_interval_seconds=polling_interval_seconds
+    )
+    start_http_server(PROMETHEUS_PORT)
+    LOG.info("start prometheus port: %s", PROMETHEUS_PORT)
+    app_metrics.run_metrics_loop()
 
 if __name__ == "__main__":
     main()
