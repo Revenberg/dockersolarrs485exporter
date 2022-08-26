@@ -2,7 +2,7 @@
 
 # version 2022-08-26 15:20
 
-cd /home/pi/solarrs485exporter
+cd /home/pi/dockersolarrs485exporter
 
 if [ -n "$1" ]; then
   ex=$1
