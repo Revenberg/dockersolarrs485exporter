@@ -79,8 +79,7 @@ class AppMetrics:
 
         instrument = rs485eth.Instrument(server, port, 1, debug=False) # port name, slave address
         
-        i = instrument.read_long(3008, functioncode=4, signed=False)
-        self._prometheus['generatedalltime'].set( i )
+        self._prometheus['generatedalltime'].set(instrument.read_long(3008, functioncode=4, signed=False))
         self._prometheus['generatedtoday'].set(instrument.read_register(3014, numberOfDecimals=1, functioncode=4, signed=False)/10)
         self._prometheus['generatedyesterday'].set(instrument.read_register(3015, numberOfDecimals=1, functioncode=4, signed=False)/10 )
         self._prometheus['acwatts'].set(instrument.read_long(3004, functioncode=4, signed=False))
