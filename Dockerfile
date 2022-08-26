@@ -18,4 +18,4 @@ RUN mkdir -p /data/backup
 
 COPY files/app* /app/
 
-CMD python ./solarrs485exporter-export.py
+CMD python ./solarrs485-exporter.py
