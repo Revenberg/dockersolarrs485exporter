@@ -77,7 +77,7 @@ class AppMetrics:
         new values.
         """
 
-        instrument = rs485eth.Instrument(server, port, 1, debug=do_raw_log) # port name, slave address
+        instrument = rs485eth.Instrument(server, port, 1, debug=False) # port name, slave address
         
         self._prometheus['generatedalltime'].set(instrument.read_long(3008, functioncode=4, signed=False))
         self._prometheus['generatedtoday'].set(instrument.read_register(3014, numberOfDecimals=1, functioncode=4, signed=False)/10)
