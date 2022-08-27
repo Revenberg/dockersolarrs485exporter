@@ -9,8 +9,8 @@ import requests
 
 LOG_LEVEL = os.getenv("LOG_LEVEL", "WARN")
 
-PROMETHEUS_PREFIX = os.getenv("PROMETHEUS_PREFIX", "solarrs485exporter")
-PROMETHEUS_PORT   = int(os.getenv("PROMETHEUS_PORT", "9003"))
+PROMETHEUS_PREFIX = os.getenv("PROMETHEUS_PREFIX", "solar")
+PROMETHEUS_PORT   = int(os.getenv("PROMETHEUS_PORT", "9009"))
 
 server = os.getenv("RS485_ADDRESS", "localhost")
 port = int(os.getenv("RS485_PORT", "8899"))
@@ -36,7 +36,10 @@ class AppMetrics:
 
         self.server=server
         self.port=port
-            
+
+        LOG.info(self.server)
+        LOG.info(self.port)
+     
         self.polling_interval_seconds = polling_interval_seconds
 
         # Prometheus metrics to collect
@@ -87,10 +90,6 @@ class AppMetrics:
         Get metrics from application and refresh Prometheus metrics with
         new values.
         """
-
-        LOG.info(self.server)
-        LOG.info(self.port)
-
         self._prometheus['generatedalltime'].set(self.getValueLong(3008, functioncode=4, signed=False))
         self._prometheus['generatedtoday'].set(self.getValueRegister(3014, numberOfDecimals=1, functioncode=4, signed=False)/10)
         self._prometheus['generatedyesterday'].set(self.getValueRegister(3015, numberOfDecimals=1, functioncode=4, signed=False)/10 )
