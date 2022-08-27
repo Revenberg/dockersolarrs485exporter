@@ -73,6 +73,16 @@ class AppMetrics:
             self.fetch()
             time.sleep(self.polling_interval_seconds)
 
+    def getValueLong(instrument, addr, functioncode=0, signed=False):
+        rc = instrument.read_long(addr, functioncode=functioncode, signed=signed)
+        LOG.info( rc )
+        return rc
+
+    def getValueRegister(instrument, addr, numberOfDecimals=0, functioncode=0, signed=False):
+        rc = instrument.read_register(addr, numberOfDecimals=numberOfDecimals, functioncode=functioncode, signed=signed)
+        LOG.info( rc )
+        return rc
+
     def fetch(self):
         """
         Get metrics from application and refresh Prometheus metrics with
@@ -84,39 +94,39 @@ class AppMetrics:
 
         instrument = rs485eth.Instrument(self.server, self.port, 1, debug=True) # port name, slave address
 
-        self._prometheus['generatedalltime'].set(instrument.read_long(3008, functioncode=4, signed=False))
-        self._prometheus['generatedtoday'].set(instrument.read_register(3014, numberOfDecimals=1, functioncode=4, signed=False)/10)
-        self._prometheus['generatedyesterday'].set(instrument.read_register(3015, numberOfDecimals=1, functioncode=4, signed=False)/10 )
-        self._prometheus['acwatts'].set(instrument.read_long(3004, functioncode=4, signed=False))
-        self._prometheus['dcvoltage1'].set(instrument.read_register(3021, functioncode=4, signed=False) / 10)
-        self._prometheus['dccurrent1'].set(instrument.read_register(3022, functioncode=4, signed=False) / 10)
-        self._prometheus['dcvoltage2'].set(instrument.read_register(3023, functioncode=4, signed=False) / 10)
-        self._prometheus['dccurrent2'].set(instrument.read_register(3024, functioncode=4, signed=False) / 10)
-        self._prometheus['acvoltage1'].set(instrument.read_register(3033, functioncode=4, signed=False) / 10)
-        self._prometheus['acvoltage2'].set(instrument.read_register(3034, functioncode=4, signed=False) / 10)
-        self._prometheus['acvoltage3'].set(instrument.read_register(3035, functioncode=4, signed=False) / 10)
-        self._prometheus['accurent1'].set(instrument.read_register(3036, functioncode=4, signed=False) / 10)
-        self._prometheus['accurent2'].set(instrument.read_register(3037, functioncode=4, signed=False) / 10)
-        self._prometheus['accurent3'].set(instrument.read_register(3038, functioncode=4, signed=False) / 10)
-        self._prometheus['frequency'].set( instrument.read_register(3042, functioncode=4, signed=False) / 100)
-        self._prometheus['temprature'].set(instrument.read_register(3041, functioncode=4, signed=True) / 10)
+        self._prometheus['generatedalltime'].set(self.getValueLong(instrument,3008, functioncode=4, signed=False))
+        self._prometheus['generatedtoday'].set(self.getValueRegister(3014, numberOfDecimals=1, functioncode=4, signed=False)/10)
+        self._prometheus['generatedyesterday'].set(self.getValueRegister(3015, numberOfDecimals=1, functioncode=4, signed=False)/10 )
+        self._prometheus['acwatts'].set(self.getValueLong(instrument,3004, functioncode=4, signed=False))
+        self._prometheus['dcvoltage1'].set(self.getValueRegister(3021, functioncode=4, signed=False) / 10)
+        self._prometheus['dccurrent1'].set(self.getValueRegister(3022, functioncode=4, signed=False) / 10)
+        self._prometheus['dcvoltage2'].set(self.getValueRegister(3023, functioncode=4, signed=False) / 10)
+        self._prometheus['dccurrent2'].set(self.getValueRegister(3024, functioncode=4, signed=False) / 10)
+        self._prometheus['acvoltage1'].set(self.getValueRegister(3033, functioncode=4, signed=False) / 10)
+        self._prometheus['acvoltage2'].set(self.getValueRegister(3034, functioncode=4, signed=False) / 10)
+        self._prometheus['acvoltage3'].set(self.getValueRegister(3035, functioncode=4, signed=False) / 10)
+        self._prometheus['accurent1'].set(self.getValueRegister(3036, functioncode=4, signed=False) / 10)
+        self._prometheus['accurent2'].set(self.getValueRegister(3037, functioncode=4, signed=False) / 10)
+        self._prometheus['accurent3'].set(self.getValueRegister(3038, functioncode=4, signed=False) / 10)
+        self._prometheus['frequency'].set( self.getValueRegister(3042, functioncode=4, signed=False) / 100)
+        self._prometheus['temprature'].set(self.getValueRegister(3041, functioncode=4, signed=True) / 10)
 
-        Realtime_DATA_yy = instrument.read_register(3072, functioncode=4, signed=False) #Read Year
-        Realtime_DATA_mm = instrument.read_register(3073, functioncode=4, signed=False) #Read Month
-        Realtime_DATA_dd = instrument.read_register(3074, functioncode=4, signed=False) #Read Day
-        Realtime_DATA_hh = instrument.read_register(3075, functioncode=4, signed=False) #Read Hour
-        Realtime_DATA_mi = instrument.read_register(3076, functioncode=4, signed=False) #Read Minute
-        Realtime_DATA_ss = instrument.read_register(3077, functioncode=4, signed=False) #Read Second
+        Realtime_DATA_yy = self.getValueRegister(3072, functioncode=4, signed=False) #Read Year
+        Realtime_DATA_mm = self.getValueRegister(3073, functioncode=4, signed=False) #Read Month
+        Realtime_DATA_dd = self.getValueRegister(3074, functioncode=4, signed=False) #Read Day
+        Realtime_DATA_hh = self.getValueRegister(3075, functioncode=4, signed=False) #Read Hour
+        Realtime_DATA_mi = self.getValueRegister(3076, functioncode=4, signed=False) #Read Minute
+        Realtime_DATA_ss = self.getValueRegister(3077, functioncode=4, signed=False) #Read Second
         
         self._prometheus['timestamp'].info( {  'yy': Realtime_DATA_yy, 'mm': Realtime_DATA_mm, 'dd': Realtime_DATA_dd, 'hh': Realtime_DATA_hh, 'mi': Realtime_DATA_mi, 'ss': Realtime_DATA_ss} )
-        self._prometheus['acpower'].set(instrument.read_register(3005, functioncode=4, signed=False))
-        self._prometheus['pvpower'].set(instrument.read_register(3007, functioncode=4, signed=False))
-        self._prometheus['totalenergy'].set(instrument.read_register(3009, functioncode=4, signed=False))
-        self._prometheus['monthenergy'].set(instrument.read_register(3011, functioncode=4, signed=False))
-        self._prometheus['lastmonth'].set(instrument.read_register(3013, functioncode=4, signed=False))
-        self._prometheus['yearenergy'].set( instrument.read_register(3017, functioncode=4, signed=False))
-        self._prometheus['lastyear'].set(instrument.read_register(3019, functioncode=4, signed=False))
-        self._prometheus['error'].info({ 'error': instrument.read_register(3043, functioncode=4, signed=False) })
+        self._prometheus['acpower'].set(self.getValueRegister(3005, functioncode=4, signed=False))
+        self._prometheus['pvpower'].set(self.getValueRegister(3007, functioncode=4, signed=False))
+        self._prometheus['totalenergy'].set(self.getValueRegister(3009, functioncode=4, signed=False))
+        self._prometheus['monthenergy'].set(self.getValueRegister(3011, functioncode=4, signed=False))
+        self._prometheus['lastmonth'].set(self.getValueRegister(3013, functioncode=4, signed=False))
+        self._prometheus['yearenergy'].set( self.getValueRegister(3017, functioncode=4, signed=False))
+        self._prometheus['lastyear'].set(self.getValueRegister(3019, functioncode=4, signed=False))
+        self._prometheus['error'].info({ 'error': self.getValueRegister(3043, functioncode=4, signed=False) })
 
         LOG.info("Update prometheus")
 
