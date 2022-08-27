@@ -12,7 +12,5 @@ services:
     restart: always   
     ports:
       - 9008:9008
-      - 8899:8899
     expose:
       - 9008
-      - 8899
