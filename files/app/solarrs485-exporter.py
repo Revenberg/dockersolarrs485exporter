@@ -20,7 +20,7 @@ polling_interval_seconds = int(os.getenv("POLLING_INTERVAL_SECONDS", "15"))
 LOGFORMAT = '%(asctime)-15s %(message)s'
 
 logging.basicConfig(level=LOG_LEVEL, format=LOGFORMAT)
-LOG = logging.getLogger("solarrs485exporter-export")
+LOG = logging.getLogger("solarrs485-export")
 
 class AppMetrics:
     """
