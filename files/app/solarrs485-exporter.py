@@ -112,14 +112,14 @@ class AppMetrics:
         self._prometheus['frequency'].set( self.getValueRegister(3042, functioncode=4, signed=False) / 100)
         self._prometheus['temprature'].set(self.getValueRegister(3041, functioncode=4, signed=True) / 10)
 
-        Realtime_DATA_yy = self.getValueRegister(3072, functioncode=4, signed=False) #Read Year
-        Realtime_DATA_mm = self.getValueRegister(3073, functioncode=4, signed=False) #Read Month
-        Realtime_DATA_dd = self.getValueRegister(3074, functioncode=4, signed=False) #Read Day
-        Realtime_DATA_hh = self.getValueRegister(3075, functioncode=4, signed=False) #Read Hour
-        Realtime_DATA_mi = self.getValueRegister(3076, functioncode=4, signed=False) #Read Minute
-        Realtime_DATA_ss = self.getValueRegister(3077, functioncode=4, signed=False) #Read Second
+        Realtime_DATA_yy = str(self.getValueRegister(3072, functioncode=4, signed=False) ) #Read Year
+        Realtime_DATA_mm = str(self.getValueRegister(3073, functioncode=4, signed=False) ) #Read Month
+        Realtime_DATA_dd = str(self.getValueRegister(3074, functioncode=4, signed=False) ) #Read Day
+        Realtime_DATA_hh = str(self.getValueRegister(3075, functioncode=4, signed=False) ) #Read Hour
+        Realtime_DATA_mi = str(self.getValueRegister(3076, functioncode=4, signed=False) ) #Read Minute
+        Realtime_DATA_ss = str(self.getValueRegister(3077, functioncode=4, signed=False) ) #Read Second
         
-#        self._prometheus['timestamp'].info( {  'yy': Realtime_DATA_yy, 'mm': Realtime_DATA_mm, 'dd': Realtime_DATA_dd, 'hh': Realtime_DATA_hh, 'mi': Realtime_DATA_mi, 'ss': Realtime_DATA_ss} )
+        self._prometheus['timestamp'].info( {  'yy': Realtime_DATA_yy, 'mm': Realtime_DATA_mm, 'dd': Realtime_DATA_dd, 'hh': Realtime_DATA_hh, 'mi': Realtime_DATA_mi, 'ss': Realtime_DATA_ss} )
         self._prometheus['acpower'].set(self.getValueRegister(3005, functioncode=4, signed=False))
         self._prometheus['pvpower'].set(self.getValueRegister(3007, functioncode=4, signed=False))
         self._prometheus['totalenergy'].set(self.getValueRegister(3009, functioncode=4, signed=False))
