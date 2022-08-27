@@ -21,7 +21,7 @@ if [ $ex == true ]; then
 
     docker image build -t revenberg/solarrs485exporter:latest .
 
-    #docker push revenberg/solarrs485exporter:latest
+    docker push revenberg/solarrs485exporter:latest
 
     # testing: 
 
