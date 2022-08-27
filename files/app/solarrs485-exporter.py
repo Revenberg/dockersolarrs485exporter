@@ -119,7 +119,7 @@ class AppMetrics:
         Realtime_DATA_mi = self.getValueRegister(3076, functioncode=4, signed=False) #Read Minute
         Realtime_DATA_ss = self.getValueRegister(3077, functioncode=4, signed=False) #Read Second
         
-#        self._prometheus['timestamp'].info( {  'yy': Realtime_DATA_yy, 'mm': Realtime_DATA_mm, 'dd': Realtime_DATA_dd, 'hh': Realtime_DATA_hh, 'mi': Realtime_DATA_mi, 'ss': Realtime_DATA_ss} )
+        self._prometheus['timestamp'].info( {  'tmps': "20" + str(Realtime_DATA_yy) + "-" + str(Realtime_DATA_mm) + "-" + str(Realtime_DATA_dd) + " " + str(Realtime_DATA_hh) + ":" + str(Realtime_DATA_mi) +':' + str(Realtime_DATA_ss) } )
         self._prometheus['acpower'].set(self.getValueRegister(3005, functioncode=4, signed=False))
         self._prometheus['pvpower'].set(self.getValueRegister(3007, functioncode=4, signed=False))
         self._prometheus['totalenergy'].set(self.getValueRegister(3009, functioncode=4, signed=False))
