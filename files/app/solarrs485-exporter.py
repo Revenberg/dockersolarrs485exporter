@@ -73,12 +73,12 @@ class AppMetrics:
             self.fetch()
             time.sleep(self.polling_interval_seconds)
 
-    def getValueLong(instrument, addr, functioncode=0, signed=False):
+    def getValueLong(instrument, addr, functioncode, signed):
         rc = instrument.read_long(addr, functioncode=functioncode, signed=signed)
         LOG.info( rc )
         return rc
 
-    def getValueRegister(instrument, addr, numberOfDecimals=0, functioncode=0, signed=False):
+    def getValueRegister(instrument, addr, numberOfDecimals, functioncode, signed):
         rc = instrument.read_register(addr, numberOfDecimals=numberOfDecimals, functioncode=functioncode, signed=signed)
         LOG.info( rc )
         return rc
