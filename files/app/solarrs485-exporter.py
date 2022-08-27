@@ -76,6 +76,7 @@ class AppMetrics:
 
     def getValueLong(self, addr, functioncode=0, signed=False):
         rc = self.instrument.read_long(addr, functioncode=functioncode, signed=signed)
+        LOG.info( "====" )
         LOG.info( rc )
         return rc
 
