@@ -73,12 +73,12 @@ class AppMetrics:
             self.fetch()
             time.sleep(self.polling_interval_seconds)
 
-    def getValueLong(instrument, addr, functioncode, signed):
+    def getValueLong(self, instrument, addr, functioncode=0, signed=False):
         rc = instrument.read_long(addr, functioncode=functioncode, signed=signed)
         LOG.info( rc )
         return rc
 
-    def getValueRegister(instrument, addr, numberOfDecimals, functioncode, signed):
+    def getValueRegister(self, instrument, addr, numberOfDecimals=0, functioncode=0, signed=False):
         rc = instrument.read_register(addr, numberOfDecimals=numberOfDecimals, functioncode=functioncode, signed=signed)
         LOG.info( rc )
         return rc
@@ -94,7 +94,7 @@ class AppMetrics:
 
         instrument = rs485eth.Instrument(self.server, self.port, 1, debug=True) # port name, slave address
 
-        self._prometheus['generatedalltime'].set(self.getValueLong(instrument,3008, 4, False))
+        self._prometheus['generatedalltime'].set(self.getValueLong(instrument,3008, functioncode=4, signed=False))
         self._prometheus['generatedtoday'].set(self.getValueRegister(3014, numberOfDecimals=1, functioncode=4, signed=False)/10)
         self._prometheus['generatedyesterday'].set(self.getValueRegister(3015, numberOfDecimals=1, functioncode=4, signed=False)/10 )
         self._prometheus['acwatts'].set(self.getValueLong(instrument,3004, functioncode=4, signed=False))
