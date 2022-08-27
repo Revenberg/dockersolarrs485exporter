@@ -66,6 +66,7 @@ class AppMetrics:
         self._prometheus['lastyear']           = Gauge(PROMETHEUS_PREFIX + 'lastyear', 'Last year energy')
         self._prometheus['error']              = Info(PROMETHEUS_PREFIX + 'error', 'Error')
 
+        self.instrument = rs485eth.Instrument(self.server, self.port, 1, debug=True) # port name, slave address
     def run_metrics_loop(self):
         """Metrics fetching loop"""
 
@@ -73,13 +74,13 @@ class AppMetrics:
             self.fetch()
             time.sleep(self.polling_interval_seconds)
 
-    def getValueLong(self, instrument, addr, functioncode=0, signed=False):
-        rc = instrument.read_long(addr, functioncode=functioncode, signed=signed)
+    def getValueLong(self, addr, functioncode=0, signed=False):
+        rc = self.instrument.read_long(addr, functioncode=functioncode, signed=signed)
         LOG.info( rc )
         return rc
 
-    def getValueRegister(self, instrument, addr, numberOfDecimals=0, functioncode=0, signed=False):
-        rc = instrument.read_register(addr, numberOfDecimals=numberOfDecimals, functioncode=functioncode, signed=signed)
+    def getValueRegister(self, addr, numberOfDecimals=0, functioncode=0, signed=False):
+        rc = self.instrument.read_register(addr, numberOfDecimals=numberOfDecimals, functioncode=functioncode, signed=signed)
         LOG.info( rc )
         return rc
 
@@ -92,12 +93,10 @@ class AppMetrics:
         LOG.info(self.server)
         LOG.info(self.port)
 
-        instrument = rs485eth.Instrument(self.server, self.port, 1, debug=True) # port name, slave address
-
-        self._prometheus['generatedalltime'].set(self.getValueLong(instrument,3008, functioncode=4, signed=False))
+        self._prometheus['generatedalltime'].set(self.getValueLong(3008, functioncode=4, signed=False))
         self._prometheus['generatedtoday'].set(self.getValueRegister(3014, numberOfDecimals=1, functioncode=4, signed=False)/10)
         self._prometheus['generatedyesterday'].set(self.getValueRegister(3015, numberOfDecimals=1, functioncode=4, signed=False)/10 )
-        self._prometheus['acwatts'].set(self.getValueLong(instrument,3004, functioncode=4, signed=False))
+        self._prometheus['acwatts'].set(self.getValueLong(3004, functioncode=4, signed=False))
         self._prometheus['dcvoltage1'].set(self.getValueRegister(3021, functioncode=4, signed=False) / 10)
         self._prometheus['dccurrent1'].set(self.getValueRegister(3022, functioncode=4, signed=False) / 10)
         self._prometheus['dcvoltage2'].set(self.getValueRegister(3023, functioncode=4, signed=False) / 10)
