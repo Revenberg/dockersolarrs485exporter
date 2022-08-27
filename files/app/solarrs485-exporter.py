@@ -82,6 +82,7 @@ class AppMetrics:
 
     def getValueRegister(self, addr, numberOfDecimals=0, functioncode=0, signed=False):
         rc = self.instrument.read_register(addr, numberOfDecimals=numberOfDecimals, functioncode=functioncode, signed=signed)
+        LOG.info( "====" )
         LOG.info( rc )
         return rc
 
