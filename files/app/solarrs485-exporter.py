@@ -127,7 +127,7 @@ class AppMetrics:
         self._prometheus['lastmonth'].set(self.getValueRegister(3013, functioncode=4, signed=False))
         self._prometheus['yearenergy'].set( self.getValueRegister(3017, functioncode=4, signed=False))
         self._prometheus['lastyear'].set(self.getValueRegister(3019, functioncode=4, signed=False))
-#        self._prometheus['error'].info({ 'error': self.getValueRegister(3043, functioncode=4, signed=False) })
+        self._prometheus['error'].info({ 'error': str(self.getValueRegister(3043, functioncode=4, signed=False)) })
 
         LOG.info("Update prometheus")
 
