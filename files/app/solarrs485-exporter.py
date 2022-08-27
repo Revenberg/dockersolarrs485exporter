@@ -66,7 +66,7 @@ class AppMetrics:
         self._prometheus['lastyear']           = Gauge(PROMETHEUS_PREFIX + 'lastyear', 'Last year energy')
         self._prometheus['error']              = Info(PROMETHEUS_PREFIX + 'error', 'Error')
 
-        self.instrument = rs485eth.Instrument(self.server, self.port, 1, debug=True) # port name, slave address
+        self.instrument = rs485eth.Instrument(self.server, self.port, 1, debug=False) # port name, slave address
     def run_metrics_loop(self):
         """Metrics fetching loop"""
 
